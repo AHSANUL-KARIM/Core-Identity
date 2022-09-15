@@ -40,6 +40,11 @@ namespace IdentityManager
                 opt.Lockout.MaxFailedAccessAttempts = 5;
                 opt.SignIn.RequireConfirmedAccount = true;
             });
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "";
+                options.AppSecret = "";
+            });
 
             services.AddControllersWithViews();
 
