@@ -36,8 +36,12 @@ namespace IdentityManager.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult AccessDenied()
         {
             return View();
         }
@@ -47,5 +51,8 @@ namespace IdentityManager.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+       
+
     }
 }
