@@ -51,6 +51,7 @@ namespace IdentityManager
             });
 
             services.AddControllersWithViews();
+            services.AddRazorPages();
 
         }
 
@@ -80,6 +81,7 @@ namespace IdentityManager
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
