@@ -30,7 +30,7 @@ namespace IdentityManager
         {
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
             services.AddTransient<IEmailSender, MailJetEmailSender>();
             services.Configure<IdentityOptions>(opt =>
             {
@@ -40,16 +40,27 @@ namespace IdentityManager
                 opt.Lockout.MaxFailedAccessAttempts = 5;
                 opt.SignIn.RequireConfirmedAccount = true;
             });
-            services.ConfigureApplicationCookie(opt =>
-            {
-                opt.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/Accessdenied");
-            });
+            
+            //services.ConfigureApplicationCookie(opt =>
+            //{
+            //    opt.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Home/Accessdenied");
+            //});
+
             services.AddAuthentication().AddFacebook(options =>
             {
                 options.AppId = "";
                 options.AppSecret = "";
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserAndAdmin", policy => policy.RequireRole("Admin").RequireRole("User"));
+                options.AddPolicy("Admin_CreateAccess", policy => policy.RequireRole("Admin").RequireClaim("create", "True"));
+                options.AddPolicy("Admin_Create_Edit_DeleteAccess", policy => policy.RequireRole("Admin").RequireClaim("create", "True")
+                .RequireClaim("edit", "True")
+                .RequireClaim("Delete", "True"));
+            });
             services.AddControllersWithViews();
             services.AddRazorPages();
 
